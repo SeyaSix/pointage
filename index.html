@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pointage Heures — 100% local</title>
+    <link rel="stylesheet" href="style.css">
+    
+
+</head>
+<body>
+  <header class="app-header">
+    <h1>Pointage Heures</h1>
+    <nav class="tabs">
+      <button type="button" data-tab="semaine" class="active">Semaine</button>
+      <button type="button" data-tab="periode">Période</button>
+      <button type="button" data-tab="annee">Année</button>
+      <button type="button" data-tab="params">Paramètres</button>
+    </nav>
+  </header>
+  <main>
+    <!-- Vue Semaine -->
+    <section id="view-semaine" class="view active">
+      <div class="nav-week">
+        <button type="button" id="prevWeek">← Semaine préc.</button>
+        <button type="button" id="todayWeek" class="secondary">Aujourd'hui</button>
+        <button type="button" id="nextWeek">Semaine suiv. →</button>
+        <span class="week-label" id="weekRangeLabel"></span>
+      </div>
+      <div class="card recap-sticky">
+        <div class="recap-bar" id="recapSemaine">
+          <span>Total: <strong id="rsTotal">0 h</strong></span>
+          <span>Normales (≤35h): <strong id="rsNormales">0 h</strong></span>
+          <span class="hs">25% (36-43h): <strong id="rsHS25">0 h</strong></span>
+          <span class="hs">50% (&gt;43h): <strong id="rsHS50">0 h</strong></span>
+          <span class="paniers">Chantier: <strong id="rsChantier">0</strong></span>
+          <span class="paniers">Dépôt: <strong id="rsDepot">0</strong></span>
+          <span class="paniers">GD: <strong id="rsGD">0</strong></span>
+        </div>
+      </div>
+      <div class="day-cards" id="dayCards"></div>
+    </section>
+
+    <!-- Vue Période -->
+    <section id="view-periode" class="view">
+      <div class="carrousel">
+        <div class="carrousel-nav">
+          <button type="button" id="prevPeriod">← Période préc.</button>
+          <span id="periodCarouselLabel"></span>
+          <button type="button" id="nextPeriod">Période suiv. →</button>
+        </div>
+        <div class="period-screen" id="periodScreen"></div>
+      </div>
+    </section>
+
+    <!-- Vue Année -->
+    <section id="view-annee" class="view">
+      <div class="card">
+        <h2>Totaux annuels 2026</h2>
+        <div class="recap-bar" id="recapAnnee"></div>
+      </div>
+      <div class="card">
+        <h2>Synthèse par période</h2>
+        <table id="tableAnnee">
+          <thead><tr><th>Période</th><th>Heures</th><th>HS gagnées</th><th>HS à payer</th><th>Chantier</th><th>Dépôt</th><th>GD</th></tr></thead>
+          <tbody id="tbodyAnnee"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Paramètres / Outils -->
+    <section id="view-params" class="view">
+      <div class="card params">
+        <h2>Seuil hebdomadaire (heures)</h2>
+        <label>Au-delà de ce nombre d'heures par semaine = heures supplémentaires</label>
+        <input type="number" id="seuilHebdo" min="1" max="60" step="0.5" value="35">
+      </div>
+      <div class="card">
+        <h2>Données</h2>
+        <div class="tool-buttons">
+          <button type="button" id="exportJson" class="btn btn-success">Export JSON</button>
+          <button type="button" id="downloadPdf" class="btn">Télécharger PDF</button>
+          <button type="button" id="importBtn" class="btn">Import JSON</button>
+          <input type="file" id="importFile" accept=".json">
+          <button type="button" id="resetBtn" class="btn btn-danger">Réinitialiser</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+
+</body>
+</html>
