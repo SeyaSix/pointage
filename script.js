@@ -237,19 +237,7 @@
     }, DEBOUNCE_MS);
   }
 
-  // ——— Données de démo (si vide) ———
-  function maybeSeedDemo() {
-    if (Object.keys(state.entries).length > 0) return;
-    const demos = [
-      { date: '2026-01-06', minutesWorked: 480, panier: 'chantier', notes: '' },
-      { date: '2026-01-07', minutesWorked: 480, panier: 'depot', notes: '' },
-      { date: '2026-01-08', minutesWorked: 510, panier: 'gd', notes: 'Déplacement client' }
-    ];
-    demos.forEach(e => {
-      state.entries[e.date] = { date: e.date, minutesWorked: e.minutesWorked, panier: e.panier, notes: e.notes || '' };
-    });
-    saveState();
-  }
+
 
   // ——— UI : Onglets ———
   document.querySelectorAll('.tabs button').forEach(btn => {
@@ -501,3 +489,4 @@
     renderSemaine();
   });
 })();
+
