@@ -153,12 +153,15 @@
       const sun = addDays(d, 6);
       if (d >= start && sun <= end) {
         const key = toDateKey(d);
-        const w = byWeek[key] || { minutes: 0, hsMinutes: 0, chantier: 0, depot: 0, gd: 0 };
+        const w = byWeek[key] || { minutes: 0, normalMinutes: 0, hs25Minutes: 0, hs50Minutes: 0, hsMinutes: 0, chantier: 0, depot: 0, gd: 0 };
         list.push({
           monday: key,
           label: 'S' + isoWeekNumber(d) + ' ' + toDateKey(d) + ' → ' + toDateKey(sun),
           totalHours: w.minutes / 60,
-          hsHours: w.hsMinutes / 60
+          hsHours: w.hsMinutes / 60,
+          normalHours: (w.normalMinutes || 0) / 60,
+          hs25Hours: (w.hs25Minutes || 0) / 60,
+          hs50Hours: (w.hs50Minutes || 0) / 60
         });
       }
       d = addDays(d, 7);
@@ -170,10 +173,13 @@
     const period = PERIODES_2026[periodIndex];
     if (!period) return null;
     const weeks = getPeriodWeeks(period);
-    let totalMinutes = 0, totalHS = 0, chantier = 0, depot = 0, gd = 0;
+    let totalMinutes = 0, totalHS = 0, totalNormal = 0, totalHS25 = 0, totalHS50 = 0, chantier = 0, depot = 0, gd = 0;
     for (const w of weeks) {
       totalMinutes += w.totalHours * 60;
       totalHS += w.hsHours * 60;
+      totalNormal += w.normalHours * 60;
+      totalHS25 += w.hs25Hours * 60;
+      totalHS50 += w.hs50Hours * 60;
     }
     for (const dateKey of iterateDays(period.start, period.end)) {
       const e = state.entries[dateKey];
@@ -194,6 +200,9 @@
       start: period.start,
       end: period.end,
       totalHours: totalMinutes / 60,
+      normalHours: totalNormal / 60,
+      hs25Hours: totalHS25 / 60,
+      hs50Hours: totalHS50 / 60,
       hsGagnees: totalHS / 60,
       hsAPayer: hsAPayer / 60,
       chantier, depot, gd,
@@ -359,13 +368,16 @@
       '<h2>' + s.label + ' (' + s.start + ' → ' + s.end + ')</h2>' +
       '<div class="stats">' +
       '<div><span>Total heures</span><strong>' + s.totalHours.toFixed(2) + ' h</strong></div>' +
+      '<div><span>Heures normales (≤35h/sem.)</span><strong>' + s.normalHours.toFixed(2) + ' h</strong></div>' +
+      '<div><span>Heures à 25% (36-43h/sem.)</span><strong class="hs">' + s.hs25Hours.toFixed(2) + ' h</strong></div>' +
+      '<div><span>Heures à 50% (&gt;43h/sem.)</span><strong class="hs">' + s.hs50Hours.toFixed(2) + ' h</strong></div>' +
       '<div><span>HS gagnées (période)</span><strong class="hs">' + s.hsGagnees.toFixed(2) + ' h</strong></div>' +
       '<div><span>HS à payer (report période préc.)</span><strong>' + s.hsAPayer.toFixed(2) + ' h</strong></div>' +
       '<div><span>Paniers chantier / dépôt / GD</span><strong>' + s.chantier + ' / ' + s.depot + ' / ' + s.gd + '</strong></div>' +
       '</div>' +
       '<h3>Semaines incluses</h3>' +
       '<div class="weeks-list">' +
-      s.weeks.map(w => w.label + ' — ' + w.totalHours.toFixed(2) + ' h (dont HS ' + w.hsHours.toFixed(2) + ' h)').join('<br>') +
+      s.weeks.map(w => w.label + ' — ' + w.totalHours.toFixed(2) + ' h (norm. ' + w.normalHours.toFixed(2) + ' · 25% ' + w.hs25Hours.toFixed(2) + ' · 50% ' + w.hs50Hours.toFixed(2) + ' h)').join('<br>') +
       '</div>';
   }
 
@@ -489,4 +501,3 @@
     renderSemaine();
   });
 })();
-
