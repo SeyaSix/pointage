@@ -372,7 +372,6 @@
       '<div><span>Heures à 25% (36-43h/sem.)</span><strong class="hs">' + s.hs25Hours.toFixed(2) + ' h</strong></div>' +
       '<div><span>Heures à 50% (&gt;43h/sem.)</span><strong class="hs">' + s.hs50Hours.toFixed(2) + ' h</strong></div>' +
       '<div><span>HS gagnées (période)</span><strong class="hs">' + s.hsGagnees.toFixed(2) + ' h</strong></div>' +
-      '<div><span>HS à payer (report période préc.)</span><strong>' + s.hsAPayer.toFixed(2) + ' h</strong></div>' +
       '<div><span>Paniers chantier / dépôt / GD</span><strong>' + s.chantier + ' / ' + s.depot + ' / ' + s.gd + '</strong></div>' +
       '</div>' +
       '<h3>Semaines incluses</h3>' +
@@ -397,7 +396,7 @@
       totalDepot += s.depot;
       totalGD += s.gd;
       rows.push(
-        '<tr><td>' + s.label + '</td><td>' + s.totalHours.toFixed(2) + '</td><td>' + s.hsGagnees.toFixed(2) + '</td><td>' + s.hsAPayer.toFixed(2) + '</td><td>' + s.chantier + '</td><td>' + s.depot + '</td><td>' + s.gd + '</td></tr>'
+        '<tr><td>' + s.label + '</td><td>' + s.totalHours.toFixed(2) + '</td><td>' + s.hsGagnees.toFixed(2) + '</td><td>' + s.chantier + '</td><td>' + s.depot + '</td><td>' + s.gd + '</td></tr>'
       );
     }
     document.getElementById('recapAnnee').innerHTML =
@@ -438,14 +437,14 @@
       totalChantier += s.chantier;
       totalDepot += s.depot;
       totalGD += s.gd;
-      rows.push('<tr><td>' + s.label + '</td><td>' + s.totalHours.toFixed(2) + '</td><td>' + s.hsGagnees.toFixed(2) + '</td><td>' + s.hsAPayer.toFixed(2) + '</td><td>' + s.chantier + '</td><td>' + s.depot + '</td><td>' + s.gd + '</td></tr>');
+      rows.push('<tr><td>' + s.label + '</td><td>' + s.totalHours.toFixed(2) + '</td><td>' + s.hsGagnees.toFixed(2) + '</td><td>' + s.chantier + '</td><td>' + s.depot + '</td><td>' + s.gd + '</td></tr>');
     }
     const html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Pointage Heures - Synthèse 2026</title>' +
       '<style>body{font-family:Segoe UI,sans-serif;padding:1.5rem;color:#1a1b26;} h1{font-size:1.25rem;} table{width:100%;border-collapse:collapse;margin-top:1rem;} th,td{padding:0.5rem;text-align:left;border:1px solid #ccc;} th{background:#eee;} .recap{margin:1rem 0;padding:0.75rem;background:#f5f5f5;border-radius:6px;} .recap strong{margin-right:1rem;} @media print{body{padding:0;} .no-print{display:none;}}</style></head><body>' +
       '<h1>Pointage Heures — Synthèse 2026</h1>' +
       '<p>Généré le ' + formatDateFR(new Date()) + '</p>' +
       '<div class="recap"><strong>Heures totales:</strong> ' + totalH.toFixed(2) + ' h — <strong>HS:</strong> ' + totalHS.toFixed(2) + ' h — <strong>Chantier:</strong> ' + totalChantier + ' — <strong>Dépôt:</strong> ' + totalDepot + ' — <strong>GD:</strong> ' + totalGD + '</div>' +
-      '<table><thead><tr><th>Période</th><th>Heures</th><th>HS gagnées</th><th>HS à payer</th><th>Chantier</th><th>Dépôt</th><th>GD</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>' +
+      '<table><thead><tr><th>Période</th><th>Heures</th><th>HS gagnées</th><th>Chantier</th><th>Dépôt</th><th>GD</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>' +
       '<p class="no-print" style="margin-top:1.5rem;font-size:0.9rem;color:#666;">Dans la boîte de dialogue d\'impression, choisissez « Enregistrer au format PDF » pour télécharger en PDF.</p>' +
       '</body></html>';
     const win = window.open('', '_blank');
