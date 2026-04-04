@@ -26,9 +26,13 @@
     const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), j = String(d.getDate()).padStart(2, '0');
     return y + '-' + m + '-' + j;
   }
-  function formatDateFR(str) {
-    const d = typeof str === 'string' ? parseDate(str) : str;
-    return d.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+  /** Affichage français jj/mm/aaaa (clé ISO ou objet Date). */
+  function formatDateJJMMAAAA(strOrDate) {
+    const d = typeof strOrDate === 'string' ? parseDate(strOrDate) : strOrDate;
+    const j = String(d.getDate()).padStart(2, '0');
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const a = d.getFullYear();
+    return j + '/' + m + '/' + a;
   }
   function addDays(d, n) {
     const r = new Date(d);
@@ -156,7 +160,7 @@
         const w = byWeek[key] || { minutes: 0, normalMinutes: 0, hs25Minutes: 0, hs50Minutes: 0, hsMinutes: 0, chantier: 0, depot: 0, gd: 0 };
         list.push({
           monday: key,
-          label: 'S' + isoWeekNumber(d) + ' ' + toDateKey(d) + ' → ' + toDateKey(sun),
+          label: 'S' + isoWeekNumber(d) + ' ' + formatDateJJMMAAAA(d) + ' → ' + formatDateJJMMAAAA(sun),
           totalHours: w.minutes / 60,
           hsHours: w.hsMinutes / 60,
           normalHours: (w.normalMinutes || 0) / 60,
@@ -274,7 +278,7 @@
     const monday = currentWeekMonday;
     const weekKey = toDateKey(monday);
     const sun = endOfISOWeek(monday);
-    document.getElementById('weekRangeLabel').textContent = 'Semaine ISO ' + isoWeekNumber(monday) + ' — ' + toDateKey(monday) + ' → ' + toDateKey(sun);
+    document.getElementById('weekRangeLabel').textContent = 'Semaine ISO ' + isoWeekNumber(monday) + ' — ' + formatDateJJMMAAAA(monday) + ' → ' + formatDateJJMMAAAA(sun);
     const recap = getWeekRecap(monday);
     document.getElementById('rsTotal').textContent = recap.totalHours.toFixed(2) + ' h';
     document.getElementById('rsNormales').textContent = recap.normalHours.toFixed(2) + ' h';
@@ -295,8 +299,8 @@
       const card = document.createElement('div');
       card.className = 'day-card';
       card.innerHTML =
-        '<div class="date-label">' + formatDateFR(day) + '</div>' +
-        '<div class="day-name">' + jours[i] + ' ' + dateKey + '</div>' +
+        '<div class="date-label">' + jours[i] + '</div>' +
+        '<div class="day-name">' + formatDateJJMMAAAA(day) + '</div>' +
         '<label>Heures</label><input type="number" step="0.25" min="0" max="24" data-date="' + dateKey + '" data-field="hours" value="' + (e.minutesWorked ? hoursVal : '') + '" placeholder="ex: 7.5">' +
         '<label class="checkbox-label"><input type="checkbox" data-date="' + dateKey + '" data-field="hs50"' + hs50Checked + '> 50% (HS à 50%)</label>' +
         '<div class="panier-btns">' +
@@ -365,7 +369,7 @@
     const s = getPeriodStats(idx);
     if (!s) return;
     document.getElementById('periodScreen').innerHTML =
-      '<h2>' + s.label + ' (' + s.start + ' → ' + s.end + ')</h2>' +
+      '<h2>' + s.label + ' (' + formatDateJJMMAAAA(s.start) + ' → ' + formatDateJJMMAAAA(s.end) + ')</h2>' +
       '<div class="stats">' +
       '<div><span>Total heures</span><strong>' + s.totalHours.toFixed(2) + ' h</strong></div>' +
       '<div><span>Heures normales (≤35h/sem.)</span><strong>' + s.normalHours.toFixed(2) + ' h</strong></div>' +
@@ -442,7 +446,7 @@
     const html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Pointage Heures - Synthèse 2026</title>' +
       '<style>body{font-family:Segoe UI,sans-serif;padding:1.5rem;color:#1a1b26;} h1{font-size:1.25rem;} table{width:100%;border-collapse:collapse;margin-top:1rem;} th,td{padding:0.5rem;text-align:left;border:1px solid #ccc;} th{background:#eee;} .recap{margin:1rem 0;padding:0.75rem;background:#f5f5f5;border-radius:6px;} .recap strong{margin-right:1rem;} @media print{body{padding:0;} .no-print{display:none;}}</style></head><body>' +
       '<h1>Pointage Heures — Synthèse 2026</h1>' +
-      '<p>Généré le ' + formatDateFR(new Date()) + '</p>' +
+      '<p>Généré le ' + formatDateJJMMAAAA(new Date()) + '</p>' +
       '<div class="recap"><strong>Heures totales:</strong> ' + totalH.toFixed(2) + ' h — <strong>HS:</strong> ' + totalHS.toFixed(2) + ' h — <strong>Chantier:</strong> ' + totalChantier + ' — <strong>Dépôt:</strong> ' + totalDepot + ' — <strong>GD:</strong> ' + totalGD + '</div>' +
       '<table><thead><tr><th>Période</th><th>Heures</th><th>HS gagnées</th><th>Chantier</th><th>Dépôt</th><th>GD</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>' +
       '<p class="no-print" style="margin-top:1.5rem;font-size:0.9rem;color:#666;">Dans la boîte de dialogue d\'impression, choisissez « Enregistrer au format PDF » pour télécharger en PDF.</p>' +
